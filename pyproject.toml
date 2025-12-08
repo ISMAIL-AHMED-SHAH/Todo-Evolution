@@ -1,0 +1,23 @@
+[project]
+name = "in-memory-todo-cli"
+version = "0.1.0"
+description = "An in-memory todo list command-line interface application."
+authors = [{ name = "Claude Code", email = "claude@example.com" }]
+dependencies = [
+    "rich~=13.7.0",
+]
+
+[project.scripts]
+todo = "src.cli:main"
+
+[project.optional-dependencies]
+dev = [
+    "pytest~=8.0.0",
+]
+
+[build-system]
+requires = ["uv>=0.1.11"]
+build-backend = "setuptools.build_meta"
+
+[tool.uv]
+python-version = ">=3.10"
