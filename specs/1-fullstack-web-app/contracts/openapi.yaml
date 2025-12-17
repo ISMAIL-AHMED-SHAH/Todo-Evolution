@@ -1,0 +1,523 @@
+openapi: 3.0.3
+info:
+  title: Todo Application API
+  description: RESTful API for the Full-Stack Multi-User Todo Web Application
+  version: 1.0.0
+  contact:
+    name: API Support
+    email: support@todoapp.example.com
+servers:
+  - url: https://api.todoapp.example.com/v1
+    description: Production server
+  - url: https://staging-api.todoapp.example.com/v1
+    description: Staging server
+  - url: http://localhost:8000
+    description: Development server
+
+security:
+  - bearerAuth: []
+
+tags:
+  - name: Authentication
+    description: User authentication endpoints
+  - name: Tasks
+    description: Task management endpoints
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: JWT token for user authentication
+
+  schemas:
+    User:
+      type: object
+      required:
+        - id
+        - email
+        - created_at
+        - updated_at
+      properties:
+        id:
+          type: integer
+          description: Unique identifier for the user
+          example: 1
+        email:
+          type: string
+          format: email
+          description: User's email address
+          example: user@example.com
+        created_at:
+          type: string
+          format: date-time
+          description: Timestamp when the user was created
+          example: "2023-01-01T00:00:00Z"
+        updated_at:
+          type: string
+          format: date-time
+          description: Timestamp when the user was last updated
+          example: "2023-01-01T00:00:00Z"
+
+    Task:
+      type: object
+      required:
+        - id
+        - user_id
+        - title
+        - completed
+        - created_at
+        - updated_at
+      properties:
+        id:
+          type: integer
+          description: Unique identifier for the task
+          example: 1
+        user_id:
+          type: integer
+          description: ID of the user who owns this task
+          example: 1
+        title:
+          type: string
+          description: Title of the task
+          example: "Buy groceries"
+          maxLength: 500
+        description:
+          type: string
+          description: Optional description of the task
+          example: "Milk, bread, eggs"
+          maxLength: 2000
+        completed:
+          type: boolean
+          description: Whether the task is completed
+          example: false
+        created_at:
+          type: string
+          format: date-time
+          description: Timestamp when the task was created
+          example: "2023-01-01T00:00:00Z"
+        updated_at:
+          type: string
+          format: date-time
+          description: Timestamp when the task was last updated
+          example: "2023-01-01T00:00:00Z"
+
+    TaskCreate:
+      type: object
+      required:
+        - title
+      properties:
+        title:
+          type: string
+          description: Title of the task
+          example: "Buy groceries"
+          maxLength: 500
+        description:
+          type: string
+          description: Optional description of the task
+          example: "Milk, bread, eggs"
+          maxLength: 2000
+
+    TaskUpdate:
+      type: object
+      properties:
+        title:
+          type: string
+          description: Updated title of the task
+          example: "Buy groceries and cook dinner"
+          maxLength: 500
+        description:
+          type: string
+          description: Updated description of the task
+          example: "Milk, bread, eggs, and ingredients for dinner"
+          maxLength: 2000
+        completed:
+          type: boolean
+          description: Updated completion status of the task
+          example: true
+
+    TaskCompletionUpdate:
+      type: object
+      required:
+        - completed
+      properties:
+        completed:
+          type: boolean
+          description: New completion status of the task
+          example: true
+
+    ErrorResponse:
+      type: object
+      required:
+        - detail
+      properties:
+        detail:
+          type: string
+          description: Error message
+          example: "Not authenticated"
+
+  parameters:
+    userId:
+      name: user_id
+      in: path
+      required: true
+      description: ID of the user
+      schema:
+        type: integer
+        example: 1
+    taskId:
+      name: id
+      in: path
+      required: true
+      description: ID of the task
+      schema:
+        type: integer
+        example: 1
+
+paths:
+  /api/{user_id}/tasks:
+    get:
+      tags:
+        - Tasks
+      summary: Get all tasks for a user
+      description: Retrieve all tasks belonging to the specified user
+      parameters:
+        - $ref: '#/components/parameters/userId'
+      responses:
+        '200':
+          description: List of tasks for the user
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Task'
+        '401':
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden - user cannot access another user's tasks
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    post:
+      tags:
+        - Tasks
+      summary: Create a new task for a user
+      description: Create a new task for the specified user
+      parameters:
+        - $ref: '#/components/parameters/userId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TaskCreate'
+      responses:
+        '201':
+          description: Task created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+        '400':
+          description: Invalid request body
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden - user cannot create tasks for another user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/{user_id}/tasks/{id}:
+    get:
+      tags:
+        - Tasks
+      summary: Get a specific task for a user
+      description: Retrieve a specific task belonging to the specified user
+      parameters:
+        - $ref: '#/components/parameters/userId'
+        - $ref: '#/components/parameters/taskId'
+      responses:
+        '200':
+          description: Task details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+        '401':
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden - user cannot access another user's tasks
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Task not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    put:
+      tags:
+        - Tasks
+      summary: Update a specific task for a user
+      description: Update a specific task belonging to the specified user
+      parameters:
+        - $ref: '#/components/parameters/userId'
+        - $ref: '#/components/parameters/taskId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TaskUpdate'
+      responses:
+        '200':
+          description: Task updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+        '400':
+          description: Invalid request body
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden - user cannot update another user's tasks
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Task not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    delete:
+      tags:
+        - Tasks
+      summary: Delete a specific task for a user
+      description: Delete a specific task belonging to the specified user
+      parameters:
+        - $ref: '#/components/parameters/userId'
+        - $ref: '#/components/parameters/taskId'
+      responses:
+        '200':
+          description: Task deleted successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+        '401':
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden - user cannot delete another user's tasks
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Task not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/{user_id}/tasks/{id}/complete:
+    patch:
+      tags:
+        - Tasks
+      summary: Toggle task completion status
+      description: Update the completion status of a specific task for the specified user
+      parameters:
+        - $ref: '#/components/parameters/userId'
+        - $ref: '#/components/parameters/taskId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TaskCompletionUpdate'
+      responses:
+        '200':
+          description: Task completion status updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+        '400':
+          description: Invalid request body
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden - user cannot update another user's tasks
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Task not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /auth/signup:
+    post:
+      tags:
+        - Authentication
+      summary: User registration
+      description: Create a new user account
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - password
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: "newuser@example.com"
+                password:
+                  type: string
+                  format: password
+                  example: "securePassword123"
+      responses:
+        '200':
+          description: User created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    example: 1
+                  email:
+                    type: string
+                    example: "newuser@example.com"
+        '400':
+          description: Invalid request or user already exists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /auth/signin:
+    post:
+      tags:
+        - Authentication
+      summary: User login
+      description: Authenticate user and return JWT token
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - password
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: "user@example.com"
+                password:
+                  type: string
+                  format: password
+                  example: "securePassword123"
+      responses:
+        '200':
+          description: Authentication successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  access_token:
+                    type: string
+                    example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                  token_type:
+                    type: string
+                    example: "bearer"
+        '400':
+          description: Invalid credentials
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /auth/profile:
+    get:
+      tags:
+        - Authentication
+      summary: Get user profile
+      description: Retrieve authenticated user's profile information
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: User profile retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '401':
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'

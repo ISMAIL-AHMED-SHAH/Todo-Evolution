@@ -1,0 +1,15 @@
+[MASTER]
+ignore=alembic/versions
+
+[FORMAT]
+max-line-length=100
+
+[MESSAGES CONTROL]
+disable=
+    C0111,  # missing-docstring
+    C0103,  # invalid-name
+    R0903,  # too-few-public-methods
+
+[DESIGN]
+max-args=7
+max-attributes=10

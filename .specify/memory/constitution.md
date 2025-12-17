@@ -1,174 +1,184 @@
 <!--
 Sync Impact Report
 ==================
-Version Change: 1.1.0 → 1.2.0
-Rationale: Added 'Documentation Capture' principle.
+Version Change: 2.0.0 → 2.1.0
+Rationale: MINOR version bump - Expanded UI principles to include rich, modern, animated UI requirements with specific component libraries and interaction patterns.
 
 Modified Principles:
-  - XIII. Documentation Capture (Added)
-Added Sections: None
+  - Principle VII: "Responsive Modern UI" → "Rich Modern Animated UI Architecture"
+    - Added: ShadCN UI component library requirement
+    - Added: Framer Motion for animations and transitions
+    - Added: Next.js App Router emphasis
+  - Principle VIII: New principle "UI Layout and Component Standards"
+    - Added: Card-based interactive blocks requirement
+    - Added: Client-side validation requirement
+    - Added: Better Auth client component integration
+    - Added: Mobile-first responsive layout rules
+
+Added Sections:
+  - New Principle VIII: UI Layout and Component Standards
+
 Removed Sections: None
 
-Templates Requiring Updates:
-  ✅ plan-template.md - Constitution Check section already exists
-  ✅ spec-template.md - No changes required (technology-agnostic requirements)
-  ✅ tasks-template.md - No changes required (task structure supports in-memory architecture)
+Renumbered Principles:
+  - Old VIII → IX (Monorepo Structure)
+  - Old IX → X (Spec-Driven Development)
+  - Old X → XI (API Contract Enforcement)
+  - Old XI → XII (Task Ownership Enforcement)
+  - Old XII → XIII (Documentation Capture)
 
-Follow-up TODOs: None
+Templates Requiring Updates:
+  ✅ plan-template.md - Already includes constitution check and frontend structure
+  ✅ spec-template.md - Already includes user scenarios and requirements sections
+  ✅ tasks-template.md - Already includes frontend/backend task organization
+  ⚠️  Frontend implementation guidance - Should reference ShadCN UI, Framer Motion, and card-based layouts
+
+Follow-up TODOs:
+  - Consider creating UI component library documentation referencing ShadCN usage patterns
+  - Consider documenting Framer Motion animation standards and reusable transitions
+  - Consider creating card-based layout templates for common task operations
 -->
 
-# In-Memory Python Todo Console App Constitution
+# Hackathon Todo App Phase-2 - Full-Stack Multi-User Web Application Constitution
 
 ## Core Principles
 
-### I. Single-File In-Memory Architecture
+### I. Full-Stack Web Application Architecture
+The application MUST be implemented as a full-stack web application with separate frontend and backend services. The frontend MUST be built with Next.js 16+ (App Router) using TypeScript and Tailwind CSS. The backend MUST be built with Python FastAPI. Services MUST communicate via REST API with JSON payloads.
 
-The entire console application MUST run fully in-memory with no external persistence layer. No external database, file storage, JSON storage, or cloud API may be used for persistence. All tasks MUST be stored in Python in-memory structures such as lists, dicts, or classes.
+**Rationale**: Enables modern web development practices, scalability, and separation of concerns between user interface and business logic while supporting multi-user functionality.
 
-**Rationale**: Ensures simplicity, reproducibility, and eliminates external dependencies that would complicate the development and testing workflow.
+### II. Multi-User Task Management System
+The application MUST support full CRUD operations for tasks with multi-user isolation. Each task MUST be owned by a specific user and only accessible to that user. API endpoints MUST enforce user ownership at every operation.
 
-### II. Python 3.10+ Implementation
+**Rationale**: Core requirement for a multi-user application to ensure data privacy and proper access control between users.
 
-The application MUST be implemented in Python version 3.10 or higher.
+### III. JWT-Based Authentication & Authorization
+User authentication MUST be implemented using Better Auth with JWT tokens. The frontend MUST attach JWT tokens to all authenticated API calls. The backend MUST verify JWT tokens using a shared secret (BETTER_AUTH_SECRET) before processing any protected requests.
 
-**Rationale**: Ensures access to modern Python features (structural pattern matching, improved type hints, performance improvements) while maintaining reasonable compatibility across common development environments.
+**Rationale**: Ensures secure user authentication and proper authorization for accessing protected resources while maintaining stateless server architecture.
 
-### III. Spec-Driven Development
+### IV. Serverless PostgreSQL Database Persistence
+All application data MUST be persisted in Neon Serverless PostgreSQL database. No in-memory storage or alternative persistence mechanisms are allowed. Database schema MUST be managed through proper migrations.
 
-The implementation MUST follow the specification file strictly. No feature may be added or removed unless updated in the spec first. Running the `specify` command on the specification must always reproduce the same structure and functions.
+**Rationale**: Provides reliable, scalable, and persistent data storage suitable for a multi-user web application with serverless scalability benefits.
 
-**Rationale**: Maintains traceability between requirements and implementation, ensures reproducibility, and prevents scope creep.
+### V. SQLModel ORM for Database Operations
+All database operations MUST use SQLModel as the Object-Relational Mapping layer. Direct SQL queries are prohibited except for complex operations that cannot be expressed through the ORM.
 
-### IV. CLI-Only Interface
+**Rationale**: Ensures type safety, prevents SQL injection, and provides a consistent interface for database operations across the application.
 
-The application MUST run through a text-based console interface. No GUI or web interface is allowed.
+### VI. RESTful API Design
+All backend endpoints MUST follow RESTful design principles with proper HTTP methods (GET, POST, PUT, PATCH, DELETE) and status codes. API endpoints MUST follow the pattern: GET/POST /api/{user_id}/tasks, GET/PUT/DELETE /api/{user_id}/tasks/{id}, PATCH /api/{user_id}/tasks/{id}/complete.
 
-**Rationale**: Keeps complexity minimal, ensures cross-platform compatibility without additional UI frameworks, and aligns with the in-memory architecture goal.
+**Rationale**: Provides consistent, predictable, and standardized API interface that follows industry best practices for web services.
 
-### V. Rich Library for Output Quality
+### VII. Rich Modern Animated UI Architecture
+The frontend interface MUST be built using Next.js App Router with a rich, modern, animated experience. All UI components MUST use ShadCN UI component library for buttons, inputs, forms, dialogs, and modals. Page transitions and element animations MUST use Framer Motion. The UI MUST be responsive and work across different device sizes and browsers using Tailwind CSS for styling.
 
-The entire Command Line Interface (CLI) output MUST utilize the Python `rich` library for improved formatting, colors, and tabular presentation (e.g., for task listing).
+**Rationale**: Provides a professional, polished user experience with consistent component design, smooth animations, and accessibility while maintaining modern web standards.
 
-**Rationale**: Provides professional-grade terminal output with minimal implementation effort, improving user experience while maintaining the CLI-only constraint.
+### VIII. UI Layout and Component Standards
+All UI pages MUST follow responsive layout rules with mobile-first design principles. Interactive elements MUST be organized as card-based blocks (e.g., "Add Task" card, "View Tasks" card, "Update Task" card). All forms MUST implement client-side validation with clear, helpful error messages. Authenticated pages MUST fetch and display user session information from Better Auth client components.
 
-### VI. Clean Architecture
+**Rationale**: Ensures consistent user interface patterns, improves usability through clear visual organization, prevents invalid data submission, and maintains secure session management throughout the application.
 
-Business logic and UI logic MUST be separated into functions. No business logic should be inside print/input statements.
+### IX. Monorepo Structure with Docker-Compose
+The project MUST follow a monorepo structure with separate directories for frontend and backend, orchestrated with docker-compose. The repository structure MUST follow: frontend/, backend/, docker-compose.yml, and proper configuration files.
 
-**Rationale**: Enables independent testing of business logic, facilitates future refactoring, and improves code maintainability and clarity.
+**Rationale**: Simplifies development, testing, and deployment while maintaining clear separation between frontend and backend codebases.
 
-### VII. Pure Functions
+### X. Spec-Driven Development
+All implementation MUST follow the specification file strictly. No feature may be added or removed unless updated in the spec first. Development workflow MUST follow: update specs → plan → tasks → implementation.
 
-All operations (add, update, delete, list) MUST be deterministic and testable with no side effects.
+**Rationale**: Maintains traceability between requirements and implementation, ensures reproducibility, and prevents scope creep while supporting the Spec-Kit-Plus methodology.
 
-**Rationale**: Ensures predictable behavior, simplifies testing, and prevents hidden state mutations that could lead to bugs.
+### XI. API Contract Enforcement
+Frontend and backend development MUST be coordinated through clearly defined API contracts. Changes to API endpoints MUST be documented and agreed upon before implementation.
 
-### VIII. No External Side Effects
+**Rationale**: Ensures frontend and backend teams can work independently while maintaining compatibility and preventing integration issues.
 
-No network calls, external imports beyond Python Standard Library (except where explicitly allowed by constitution), or system-level changes are allowed.
+### XII. Task Ownership Enforcement
+Every API operation MUST verify that the authenticated user owns the task being accessed. No user MAY access, modify, or delete tasks owned by other users. Database queries MUST filter by user_id for all operations.
 
-**Rationale**: Maintains isolation, ensures reproducibility across environments, and prevents security vulnerabilities from external dependencies.
-
-### IX. Standard Library Preference
-
-All non-core logic imports MUST be restricted to the Python Standard Library unless explicitly required by a Constitution rule (such as `rich`) or an approved ADR.
-
-**Rationale**: Minimizes external dependencies, reduces security surface area, improves long-term maintainability, and ensures broad compatibility.
-
-### X. Reproducibility
-
-Running the `specify` command on the specification must always reproduce the same structure and functions.
-
-**Rationale**: Ensures the specification is the single source of truth and implementation can be reliably regenerated from requirements.
-
-### XI. Testability
-
-All functions MUST be independently testable. State mutations MUST be explicit and traceable.
-
-**Rationale**: Enables comprehensive test coverage, simplifies debugging, and ensures code quality can be verified objectively.
-
-### XII. UV Environment & Dependency Management
-
-The project MUST use `uv` as the environment and dependency manager. All dependencies MUST be listed explicitly in `pyproject.toml` or `requirements.txt` and managed by `uv`.
-
-**Rationale**: Standardizes dependency management, ensures reproducible builds, and leverages `uv`\'s performance benefits for faster environment setup and package resolution.
+**Rationale**: Critical security requirement to ensure data isolation between users and prevent unauthorized access to tasks.
 
 ### XIII. Documentation Capture
-
-Architectural Decision Records (ADRs) and Prompt History Records (PHRs) MUST be automatically generated and maintained by the AI under the `@history` directory for every major workflow command (`/sp.plan`, `/sp.tasks`, `/sp.implement`) to ensure full project transparency and horizontal intelligence accumulation.
+Architectural Decision Records (ADRs) and Prompt History Records (PHRs) MUST be automatically generated and maintained by the AI under the `history/` directory for every major workflow command (`/sp.plan`, `/sp.tasks`, `/sp.implement`) to ensure full project transparency and horizontal intelligence accumulation.
 
 **Rationale**: Ensures comprehensive historical context for development decisions and interactions, facilitates knowledge transfer, and provides a traceable audit trail for all significant project changes.
-
 
 ## Development Workflow
 
 ### Specification-First Development
-
 1. All features MUST be documented in the specification before implementation
 2. Specification changes MUST be reviewed and approved before code changes
 3. Implementation MUST reference the specific spec section being implemented
+4. All development begins with updating specs, then planning, then tasks, then implementation
 
-### Test-Driven Development (Recommended)
-
-- Tests SHOULD be written before implementation when feasible
-- All business logic functions MUST have corresponding unit tests
-- Integration tests SHOULD cover user scenarios from the specification
+### Frontend-Backend Coordination
+- API contracts MUST be defined before parallel development
+- Frontend and backend teams MUST coordinate through shared specification
+- Integration testing SHOULD occur regularly to ensure compatibility
 
 ### Code Review Standards
-
 - All changes MUST reference the specification section they implement
 - Reviewers MUST verify alignment with constitution principles
+- API changes MUST be documented and justified
 - Violations of constitution principles MUST be documented and justified
 
 ## Quality Standards
 
 ### Code Organization
-
-- Business logic MUST reside in separate functions from UI code
-- Functions MUST have single, clear responsibilities
-- Magic values MUST be replaced with named constants
+- Frontend and backend code MUST be properly separated
+- Business logic MUST be properly distributed between frontend and backend
+- Authentication logic MUST be clearly separated from business logic
+- Database models MUST be properly defined in SQLModel
 
 ### Error Handling
+- All API endpoints MUST handle errors gracefully with proper HTTP status codes
+- Authentication errors MUST return 401 Unauthorized
+- Authorization errors MUST return 403 Forbidden
+- Resource not found errors MUST return 404 Not Found
+- Server errors MUST return appropriate 5xx status codes
 
-- All user inputs MUST be validated
-- Error messages MUST be clear and actionable
-- The application MUST NOT crash from invalid user input
-
-### Documentation
-
-- All public functions MUST have docstrings describing purpose, parameters, and return values
-- Complex algorithms MUST include inline comments explaining logic
-- The README MUST provide clear usage instructions
+### Security
+- All API endpoints MUST verify JWT authentication where required
+- User input MUST be validated and sanitized
+- SQL queries MUST use parameterized statements through ORM
+- Secrets MUST be stored in environment variables, never hardcoded
 
 ### Performance
+- API responses MUST complete within reasonable timeframes (< 2 seconds for typical operations)
+- Database queries MUST be optimized and use appropriate indexing
+- Frontend pages MUST load efficiently with proper caching strategies
 
-- Operations MUST complete in reasonable time for console interaction (< 1 second response time)
-- Memory usage MUST remain reasonable for typical use (< 100MB for normal task lists)
+### Testing
+- Backend API endpoints MUST have comprehensive unit and integration tests
+- Frontend components MUST have appropriate unit tests
+- Authentication flows MUST be thoroughly tested
+- Multi-user scenarios MUST be tested for proper isolation
 
 ## Governance
 
 ### Constitution Authority
-
 This constitution supersedes all other development practices and guidelines. When conflicts arise between this constitution and other documentation, the constitution takes precedence.
 
 ### Amendment Process
-
 1. Proposed amendments MUST be documented with rationale and impact analysis
 2. Amendments MUST be approved by project stakeholders
 3. Amendments MUST include a migration plan for existing code if applicable
 4. All template files MUST be updated to reflect constitutional changes
 
 ### Compliance
-
 - All pull requests MUST verify compliance with this constitution
-- Complexity violations MUST be justified in the implementation plan
+- Architecture violations MUST be justified in the implementation plan
 - Regular constitution compliance audits SHOULD be conducted
 
 ### Version Semantics
-
 Constitution versions follow semantic versioning:
 - **MAJOR**: Backward incompatible governance changes or principle removals/redefinitions
 - **MINOR**: New principles added or materially expanded guidance
 - **PATCH**: Clarifications, wording improvements, non-semantic refinements
 
-**Version**: 1.2.0 | **Ratified**: 2025-12-03 | **Last Amended**: 2025-12-04
+**Version**: 2.1.0 | **Ratified**: 2025-12-08 | **Last Amended**: 2025-12-13

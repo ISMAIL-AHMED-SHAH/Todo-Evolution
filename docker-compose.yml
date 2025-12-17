@@ -1,0 +1,74 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    container_name: todo-postgres
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-todouser}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-todopassword}
+      POSTGRES_DB: ${POSTGRES_DB:-todo_db}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U todouser -d todo_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - todo-network
+
+  # Backend API
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: todo-backend
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER:-todouser}:${POSTGRES_PASSWORD:-todopassword}@postgres:5432/${POSTGRES_DB:-todo_db}
+      BETTER_AUTH_SECRET: ${BETTER_AUTH_SECRET:-change-me-in-production}
+      ENVIRONMENT: ${ENVIRONMENT:-development}
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/app
+      - /app/__pycache__
+      - /app/.pytest_cache
+    depends_on:
+      postgres:
+        condition: service_healthy
+    command: uvicorn src.main:app --host 0.0.0.0 --port 8000 --reload
+    networks:
+      - todo-network
+
+  # Frontend
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: todo-frontend
+    environment:
+      NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost:8000}
+      NODE_ENV: ${NODE_ENV:-development}
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+      - /app/.next
+    depends_on:
+      - backend
+    command: npm run dev
+    networks:
+      - todo-network
+
+volumes:
+  postgres_data:
+    driver: local
+
+networks:
+  todo-network:
+    driver: bridge
