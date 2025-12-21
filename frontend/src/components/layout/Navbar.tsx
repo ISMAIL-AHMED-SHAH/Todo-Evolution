@@ -16,6 +16,7 @@ import { Button } from '@/components/ui/button';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Menu, X } from 'lucide-react';
+import ThemeToggle from '@/components/ThemeToggle';
 
 export default function Navbar() {
   const { user, logout } = useAuth();
@@ -50,9 +51,9 @@ export default function Navbar() {
           <Link
             href="/dashboard"
             className="text-xl font-bold hover:text-teal-100 transition-colors"
-            aria-label="Todo App Home"
+            aria-label="ToDoneAI Home"
           >
-            Todo App
+            ToDoneAI
           </Link>
 
           {/* T135: Mobile Menu Toggle Button */}
@@ -99,7 +100,8 @@ export default function Navbar() {
           </div>
 
           {/* Desktop User Section - T140: ARIA labels */}
-          <div className="hidden md:flex items-center gap-4">
+          <div className="hidden md:flex items-center gap-3">
+            <ThemeToggle />
             {user && (
               <span className="text-sm text-teal-100" aria-label={`Logged in as ${user.email}`}>
                 {user.email}
@@ -156,11 +158,14 @@ export default function Navbar() {
 
               {/* Mobile User Section */}
               <div className="px-4 py-2 border-t border-teal-500 mt-2 pt-4">
-                {user && (
-                  <p className="text-sm text-teal-100 mb-3" aria-label={`Logged in as ${user.email}`}>
-                    {user.email}
-                  </p>
-                )}
+                <div className="flex items-center justify-between mb-3">
+                  {user && (
+                    <p className="text-sm text-teal-100" aria-label={`Logged in as ${user.email}`}>
+                      {user.email}
+                    </p>
+                  )}
+                  <ThemeToggle />
+                </div>
                 <Button
                   onClick={() => {
                     closeMobileMenu();

@@ -115,21 +115,13 @@ export function TaskForm({
   }, [mode, task, form]);
 
   /**
-   * Handle form submission with toast notifications (T113)
+   * Handle form submission
    * T116: Clear form fields after successful creation
    */
   const handleSubmit = async (data: CreateTaskFormData) => {
     try {
       // Call parent's onSubmit handler
-      await onSubmit(data);
-
-      // Show success toast (T113)
-      success(
-        mode === 'create'
-          ? `Task "${data.title}" created successfully!`
-          : `Task "${data.title}" updated successfully!`,
-        mode === 'create' ? 'Task Created' : 'Task Updated'
-      );
+      onSubmit(data);
 
       // Reset form to default values after submission (T116 - for create mode)
       // This ensures form is clean for next creation
@@ -143,7 +135,7 @@ export function TaskForm({
         });
       }
     } catch (err) {
-      // Show error toast (T113)
+      // Show error toast for form validation errors
       const errorMessage = err instanceof Error ? err.message : 'An unexpected error occurred';
       error(
         mode === 'create'
@@ -164,7 +156,7 @@ export function TaskForm({
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
+      <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-5">
         {/* Title Field - Required (T108) */}
         <motion.div
           custom={0}
@@ -176,21 +168,21 @@ export function TaskForm({
             control={form.control}
             name="title"
             render={({ field }) => (
-              <FormItem>
-                <FormLabel className="text-sm font-semibold">
-                  Title <span className="text-red-500">*</span>
+              <FormItem className="space-y-2">
+                <FormLabel className="text-sm font-semibold text-gray-900 dark:text-white">
+                  Title <span className="text-red-500 dark:text-red-400">*</span>
                 </FormLabel>
                 <FormControl>
                   <Input
                     {...field}
                     placeholder="Enter task title..."
                     disabled={isLoading}
-                    className="text-base"
+                    className="text-base h-11 bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white placeholder:text-gray-500 dark:placeholder:text-gray-400"
                     autoFocus
                   />
                 </FormControl>
-                <FormDescription className="text-xs text-gray-500">
-                  A clear, concise title for your task (required)
+                <FormDescription className="text-xs text-gray-500 dark:text-gray-400 mt-1.5">
+                  A clear, concise title for your task
                 </FormDescription>
                 <FormMessage className="text-xs" />
               </FormItem>
@@ -209,22 +201,22 @@ export function TaskForm({
             control={form.control}
             name="description"
             render={({ field }) => (
-              <FormItem>
-                <FormLabel className="text-sm font-semibold">
+              <FormItem className="space-y-2">
+                <FormLabel className="text-sm font-semibold text-gray-900 dark:text-white">
                   Description
                 </FormLabel>
                 <FormControl>
                   <Textarea
                     {...field}
-                    placeholder="Add a detailed description (optional)..."
+                    placeholder="Add details about this task..."
                     disabled={isLoading}
                     rows={4}
-                    className="resize-none text-base"
+                    className="resize-none text-base bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white placeholder:text-gray-500 dark:placeholder:text-gray-400 min-h-[100px]"
                     value={field.value || ''}
                   />
                 </FormControl>
-                <FormDescription className="text-xs text-gray-500">
-                  Provide additional details about this task
+                <FormDescription className="text-xs text-gray-500 dark:text-gray-400 mt-1.5">
+                  Optional additional details
                 </FormDescription>
                 <FormMessage className="text-xs" />
               </FormItem>
@@ -243,8 +235,8 @@ export function TaskForm({
             control={form.control}
             name="priority"
             render={({ field }) => (
-              <FormItem>
-                <FormLabel className="text-sm font-semibold">
+              <FormItem className="space-y-2">
+                <FormLabel className="text-sm font-semibold text-gray-900 dark:text-white">
                   Priority
                 </FormLabel>
                 <Select
@@ -253,12 +245,12 @@ export function TaskForm({
                   disabled={isLoading}
                 >
                   <FormControl>
-                    <SelectTrigger className="text-base">
+                    <SelectTrigger className="text-base h-11 bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white">
                       <SelectValue placeholder="Select priority level" />
                     </SelectTrigger>
                   </FormControl>
-                  <SelectContent>
-                    <SelectItem value="High">
+                  <SelectContent className="bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600">
+                    <SelectItem value="High" className="dark:text-white dark:focus:bg-gray-600">
                       <div className="flex items-center gap-2">
                         <div
                           className={cn(
@@ -269,7 +261,7 @@ export function TaskForm({
                         <span>High</span>
                       </div>
                     </SelectItem>
-                    <SelectItem value="Medium">
+                    <SelectItem value="Medium" className="dark:text-white dark:focus:bg-gray-600">
                       <div className="flex items-center gap-2">
                         <div
                           className={cn(
@@ -280,7 +272,7 @@ export function TaskForm({
                         <span>Medium</span>
                       </div>
                     </SelectItem>
-                    <SelectItem value="Low">
+                    <SelectItem value="Low" className="dark:text-white dark:focus:bg-gray-600">
                       <div className="flex items-center gap-2">
                         <div
                           className={cn(
@@ -293,8 +285,8 @@ export function TaskForm({
                     </SelectItem>
                   </SelectContent>
                 </Select>
-                <FormDescription className="text-xs text-gray-500">
-                  Set the priority level for this task
+                <FormDescription className="text-xs text-gray-500 dark:text-gray-400 mt-1.5">
+                  Choose urgency level
                 </FormDescription>
                 <FormMessage className="text-xs" />
               </FormItem>
@@ -313,8 +305,8 @@ export function TaskForm({
             control={form.control}
             name="category"
             render={({ field }) => (
-              <FormItem>
-                <FormLabel className="text-sm font-semibold">
+              <FormItem className="space-y-2">
+                <FormLabel className="text-sm font-semibold text-gray-900 dark:text-white">
                   Categories
                 </FormLabel>
                 <FormControl>
@@ -324,8 +316,8 @@ export function TaskForm({
                     disabled={isLoading}
                   />
                 </FormControl>
-                <FormDescription className="text-xs text-gray-500">
-                  Add tags to organize your tasks (max 10)
+                <FormDescription className="text-xs text-gray-500 dark:text-gray-400 mt-1.5">
+                  Add tags to organize (max 10)
                 </FormDescription>
                 <FormMessage className="text-xs" />
               </FormItem>
@@ -344,8 +336,8 @@ export function TaskForm({
             control={form.control}
             name="due_date"
             render={({ field }) => (
-              <FormItem className="flex flex-col">
-                <FormLabel className="text-sm font-semibold">
+              <FormItem className="flex flex-col space-y-2">
+                <FormLabel className="text-sm font-semibold text-gray-900 dark:text-white">
                   Due Date
                 </FormLabel>
                 <Popover>
@@ -354,8 +346,8 @@ export function TaskForm({
                       <Button
                         variant="outline"
                         className={cn(
-                          'w-full pl-3 text-left font-normal text-base',
-                          !field.value && 'text-muted-foreground'
+                          'w-full h-11 pl-3 text-left font-normal text-base bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white',
+                          !field.value && 'text-muted-foreground dark:text-gray-400'
                         )}
                         disabled={isLoading}
                       >
@@ -368,7 +360,7 @@ export function TaskForm({
                       </Button>
                     </FormControl>
                   </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0" align="start">
+                  <PopoverContent className="w-auto p-0 bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600" align="start">
                     <Calendar
                       mode="single"
                       selected={field.value ? new Date(field.value) : undefined}
@@ -379,11 +371,12 @@ export function TaskForm({
                       }}
                       disabled={(date) => isLoading}
                       initialFocus
+                      className="dark:text-white"
                     />
                   </PopoverContent>
                 </Popover>
-                <FormDescription className="text-xs text-gray-500">
-                  Optional deadline for this task
+                <FormDescription className="text-xs text-gray-500 dark:text-gray-400 mt-1.5">
+                  Optional deadline
                 </FormDescription>
                 <FormMessage className="text-xs" />
               </FormItem>
@@ -391,18 +384,27 @@ export function TaskForm({
           />
         </motion.div>
 
-        {/* Action Buttons */}
+        {/* Action Buttons - Fixed at bottom */}
         <motion.div
           custom={5}
           variants={fieldVariants}
           initial="hidden"
           animate="visible"
-          className="flex flex-col sm:flex-row gap-3 pt-4 border-t"
+          className="flex flex-col-reverse sm:flex-row gap-3 pt-6 mt-2 border-t border-gray-200 dark:border-gray-700 sticky bottom-0 bg-white dark:bg-gray-800 pb-1"
         >
+          <Button
+            type="button"
+            variant="outline"
+            onClick={handleCancel}
+            disabled={isLoading}
+            className="w-full sm:flex-1 min-h-[48px] sm:min-h-[44px] bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white hover:bg-gray-50 dark:hover:bg-gray-600"
+          >
+            Cancel
+          </Button>
           <Button
             type="submit"
             disabled={isLoading}
-            className="w-full sm:flex-1 bg-teal-600 hover:bg-teal-700 text-white min-h-[44px]"
+            className="w-full sm:flex-1 bg-teal-600 hover:bg-teal-700 text-white min-h-[48px] sm:min-h-[44px] font-semibold"
           >
             {isLoading
               ? mode === 'create'
@@ -411,15 +413,6 @@ export function TaskForm({
               : mode === 'create'
               ? 'Create Task'
               : 'Save Changes'}
-          </Button>
-          <Button
-            type="button"
-            variant="outline"
-            onClick={handleCancel}
-            disabled={isLoading}
-            className="w-full sm:flex-1 min-h-[44px]"
-          >
-            Cancel
           </Button>
         </motion.div>
       </form>

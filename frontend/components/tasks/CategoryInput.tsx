@@ -136,14 +136,14 @@ export function CategoryInput({
               >
                 <Badge
                   variant="secondary"
-                  className="pl-3 pr-2 py-1.5 flex items-center gap-1.5 bg-blue-100 text-blue-900 hover:bg-blue-200 transition-colors"
+                  className="pl-3 pr-2 py-1.5 flex items-center gap-1.5 bg-blue-100 dark:bg-blue-900/30 text-blue-900 dark:text-blue-200 hover:bg-blue-200 dark:hover:bg-blue-900/40 transition-colors border border-blue-200 dark:border-blue-800"
                 >
                   <span className="text-sm font-medium">{category}</span>
                   <button
                     type="button"
                     onClick={() => removeCategory(index)}
                     disabled={disabled}
-                    className="ml-1 rounded-full hover:bg-blue-300 transition-colors p-0.5 focus:outline-none focus:ring-2 focus:ring-blue-400 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="ml-1 rounded-full hover:bg-blue-300 dark:hover:bg-blue-800 transition-colors p-0.5 focus:outline-none focus:ring-2 focus:ring-blue-400 dark:focus:ring-blue-600 disabled:opacity-50 disabled:cursor-not-allowed"
                     aria-label={`Remove ${category}`}
                   >
                     <X className="h-3 w-3" />
@@ -164,23 +164,23 @@ export function CategoryInput({
           onKeyDown={handleKeyDown}
           placeholder={placeholder}
           disabled={disabled || value.length >= maxCategories}
-          className={error ? 'border-red-500 focus:ring-red-500' : ''}
+          className={`h-11 bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white placeholder:text-gray-500 dark:placeholder:text-gray-400 ${error ? 'border-red-500 focus:ring-red-500' : ''}`}
           aria-invalid={!!error}
           aria-describedby={error ? 'category-error' : undefined}
         />
 
         {/* Helper text */}
-        <div className="flex justify-between items-center mt-1 text-xs">
+        <div className="flex justify-between items-center mt-1.5 text-xs">
           {error ? (
-            <p id="category-error" className="text-red-600">
+            <p id="category-error" className="text-red-600 dark:text-red-400">
               {error}
             </p>
           ) : (
-            <p className="text-gray-500">
-              Press Enter to add a category
+            <p className="text-gray-500 dark:text-gray-400">
+              Press Enter to add
             </p>
           )}
-          <p className="text-gray-400">
+          <p className="text-gray-400 dark:text-gray-500">
             {value.length}/{maxCategories}
           </p>
         </div>

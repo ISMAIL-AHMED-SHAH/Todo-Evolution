@@ -135,13 +135,13 @@ export function useTaskMutations(
         // Cancel outgoing refetches
         await queryClient.cancelQueries({ queryKey: taskQueryKeys.lists() });
 
-        // Snapshot previous value
+        // Snapshot previous value (with explicit undefined for filters)
         const previousTasks = queryClient.getQueryData<Task[]>(
-          taskQueryKeys.list(userId)
+          taskQueryKeys.list(userId, undefined)
         );
 
-        // Optimistically update cache
-        queryClient.setQueryData<Task[]>(taskQueryKeys.list(userId), (old = []) => {
+        // Optimistically update cache (with explicit undefined for filters)
+        queryClient.setQueryData<Task[]>(taskQueryKeys.list(userId, undefined), (old = []) => {
           const optimisticTask: TaskWithUIState = {
             id: Date.now(), // Temporary ID
             user_id: userId,
@@ -165,7 +165,7 @@ export function useTaskMutations(
       // On error, rollback to previous state
       onError: (error, _newTask, context) => {
         if (context?.previousTasks && userId) {
-          queryClient.setQueryData(taskQueryKeys.list(userId), context.previousTasks);
+          queryClient.setQueryData(taskQueryKeys.list(userId, undefined), context.previousTasks);
         }
         options?.onError?.(error);
       },
@@ -204,14 +204,14 @@ export function useTaskMutations(
       await queryClient.cancelQueries({ queryKey: taskQueryKeys.lists() });
       await queryClient.cancelQueries({ queryKey: taskQueryKeys.detail(userId, taskId) });
 
-      // Snapshot previous values
-      const previousTasks = queryClient.getQueryData<Task[]>(taskQueryKeys.list(userId));
+      // Snapshot previous values (with explicit undefined for filters)
+      const previousTasks = queryClient.getQueryData<Task[]>(taskQueryKeys.list(userId, undefined));
       const previousTask = queryClient.getQueryData<Task>(
         taskQueryKeys.detail(userId, taskId)
       );
 
-      // Optimistically update task list cache
-      queryClient.setQueryData<Task[]>(taskQueryKeys.list(userId), (old = []) => {
+      // Optimistically update task list cache (with explicit undefined for filters)
+      queryClient.setQueryData<Task[]>(taskQueryKeys.list(userId, undefined), (old = []) => {
         return old.map((task) => {
           if (task.id === taskId) {
             return {
@@ -242,7 +242,7 @@ export function useTaskMutations(
     onError: (error, { taskId }, context) => {
       if (userId) {
         if (context?.previousTasks) {
-          queryClient.setQueryData(taskQueryKeys.list(userId), context.previousTasks);
+          queryClient.setQueryData(taskQueryKeys.list(userId, undefined), context.previousTasks);
         }
         if (context?.previousTask) {
           queryClient.setQueryData(
@@ -257,8 +257,8 @@ export function useTaskMutations(
     // On success, replace optimistic update with real data
     onSuccess: (task, { taskId }) => {
       if (userId) {
-        // Update caches with real data
-        queryClient.setQueryData<Task[]>(taskQueryKeys.list(userId), (old = []) => {
+        // Update caches with real data (with explicit undefined for filters)
+        queryClient.setQueryData<Task[]>(taskQueryKeys.list(userId, undefined), (old = []) => {
           return old.map((t) => (t.id === taskId ? task : t));
         });
         queryClient.setQueryData(taskQueryKeys.detail(userId, taskId), task);
@@ -289,13 +289,13 @@ export function useTaskMutations(
         // Cancel outgoing refetches
         await queryClient.cancelQueries({ queryKey: taskQueryKeys.lists() });
 
-        // Snapshot previous value
+        // Snapshot previous value (with explicit undefined for filters)
         const previousTasks = queryClient.getQueryData<Task[]>(
-          taskQueryKeys.list(userId)
+          taskQueryKeys.list(userId, undefined)
         );
 
-        // Optimistically remove task
-        queryClient.setQueryData<Task[]>(taskQueryKeys.list(userId), (old = []) => {
+        // Optimistically remove task (with explicit undefined for filters)
+        queryClient.setQueryData<Task[]>(taskQueryKeys.list(userId, undefined), (old = []) => {
           return old.map((task) =>
             task.id === taskId ? { ...task, _isDeleting: true } as TaskWithUIState : task
           );
@@ -308,7 +308,7 @@ export function useTaskMutations(
       // On error, rollback to previous state
       onError: (error, _taskId, context) => {
         if (context?.previousTasks && userId) {
-          queryClient.setQueryData(taskQueryKeys.list(userId), context.previousTasks);
+          queryClient.setQueryData(taskQueryKeys.list(userId, undefined), context.previousTasks);
         }
         options?.onError?.(error);
       },
@@ -316,8 +316,8 @@ export function useTaskMutations(
       // On success, remove task completely
       onSuccess: (_data, taskId) => {
         if (userId) {
-          // Remove task from cache
-          queryClient.setQueryData<Task[]>(taskQueryKeys.list(userId), (old = []) => {
+          // Remove task from cache (with explicit undefined for filters)
+          queryClient.setQueryData<Task[]>(taskQueryKeys.list(userId, undefined), (old = []) => {
             return old.filter((task) => task.id !== taskId);
           });
 
@@ -353,11 +353,11 @@ export function useTaskMutations(
       // Cancel outgoing refetches
       await queryClient.cancelQueries({ queryKey: taskQueryKeys.lists() });
 
-      // Snapshot previous value
-      const previousTasks = queryClient.getQueryData<Task[]>(taskQueryKeys.list(userId));
+      // Snapshot previous value (with explicit undefined for filters)
+      const previousTasks = queryClient.getQueryData<Task[]>(taskQueryKeys.list(userId, undefined));
 
-      // Optimistically toggle completion
-      queryClient.setQueryData<Task[]>(taskQueryKeys.list(userId), (old = []) => {
+      // Optimistically toggle completion (with explicit undefined for filters)
+      queryClient.setQueryData<Task[]>(taskQueryKeys.list(userId, undefined), (old = []) => {
         return old.map((task) =>
           task.id === taskId
             ? { ...task, completed, updated_at: new Date().toISOString() }
@@ -372,7 +372,7 @@ export function useTaskMutations(
     // On error, rollback to previous state
     onError: (error, _variables, context) => {
       if (context?.previousTasks && userId) {
-        queryClient.setQueryData(taskQueryKeys.list(userId), context.previousTasks);
+        queryClient.setQueryData(taskQueryKeys.list(userId, undefined), context.previousTasks);
       }
       options?.onError?.(error);
     },
@@ -380,8 +380,8 @@ export function useTaskMutations(
     // On success, update with real data
     onSuccess: (task, { taskId }) => {
       if (userId) {
-        // Update task in cache
-        queryClient.setQueryData<Task[]>(taskQueryKeys.list(userId), (old = []) => {
+        // Update task in cache (with explicit undefined for filters)
+        queryClient.setQueryData<Task[]>(taskQueryKeys.list(userId, undefined), (old = []) => {
           return old.map((t) => (t.id === taskId ? task : t));
         });
         queryClient.setQueryData(taskQueryKeys.detail(userId, taskId), task);

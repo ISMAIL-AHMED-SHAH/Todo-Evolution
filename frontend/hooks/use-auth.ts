@@ -352,11 +352,39 @@ export function useRequireAuth(): User {
 
 /**
  * Hook to get the user ID
- * Returns null if not authenticated
+ * Returns stable userId across page navigations by caching in localStorage
+ * Returns null only when explicitly not authenticated
  */
 export function useUserId(): number | null {
-  const { user, isAuthenticated } = useAuth();
-  return isAuthenticated && user ? user.id : null;
+  const { user, isAuthenticated, isLoading } = useAuth();
+
+  // If authenticated and user exists, cache and return userId
+  if (isAuthenticated && user) {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('cached_user_id', String(user.id));
+    }
+    return user.id;
+  }
+
+  // If still loading, return cached userId to prevent cache key changes
+  if (isLoading) {
+    if (typeof window !== 'undefined') {
+      const cachedId = localStorage.getItem('cached_user_id');
+      if (cachedId) {
+        return parseInt(cachedId, 10);
+      }
+    }
+  }
+
+  // Only return null when explicitly not authenticated
+  // Clear cached userId on logout
+  if (!isAuthenticated && !isLoading) {
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('cached_user_id');
+    }
+  }
+
+  return null;
 }
 
 /**

@@ -91,13 +91,14 @@ export default function LoginForm() {
             name="email"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Email</FormLabel>
+                <FormLabel className="text-gray-900 dark:text-white">Email</FormLabel>
                 <FormControl>
                   <Input
                     type="email"
                     placeholder="you@example.com"
                     autoComplete="email"
                     disabled={isLoading}
+                    className="bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white placeholder:text-gray-500 dark:placeholder:text-gray-400"
                     {...field}
                   />
                 </FormControl>
@@ -112,13 +113,14 @@ export default function LoginForm() {
             name="password"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Password</FormLabel>
+                <FormLabel className="text-gray-900 dark:text-white">Password</FormLabel>
                 <FormControl>
                   <Input
                     type="password"
                     placeholder="Enter your password"
                     autoComplete="current-password"
                     disabled={isLoading}
+                    className="bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white placeholder:text-gray-500 dark:placeholder:text-gray-400"
                     {...field}
                   />
                 </FormControl>

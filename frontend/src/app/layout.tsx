@@ -9,8 +9,8 @@ import { Toaster } from '@/components/ui/toaster'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'Todo App - Task Management',
-  description: 'Full-stack multi-user todo application with authentication',
+  title: 'ToDoneAI - Smart Task Management',
+  description: 'Full-stack multi-user todo application with authentication and AI-powered features',
 }
 
 export default function RootLayout({

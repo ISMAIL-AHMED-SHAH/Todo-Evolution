@@ -103,13 +103,14 @@ export default function RegisterForm() {
             name="email"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Email</FormLabel>
+                <FormLabel className="text-gray-900 dark:text-white">Email</FormLabel>
                 <FormControl>
                   <Input
                     type="email"
                     placeholder="you@example.com"
                     autoComplete="email"
                     disabled={isLoading}
+                    className="bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white placeholder:text-gray-500 dark:placeholder:text-gray-400"
                     {...field}
                   />
                 </FormControl>
@@ -124,17 +125,18 @@ export default function RegisterForm() {
             name="password"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Password</FormLabel>
+                <FormLabel className="text-gray-900 dark:text-white">Password</FormLabel>
                 <FormControl>
                   <Input
                     type="password"
                     placeholder="Create a secure password"
                     autoComplete="new-password"
                     disabled={isLoading}
+                    className="bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white placeholder:text-gray-500 dark:placeholder:text-gray-400"
                     {...field}
                   />
                 </FormControl>
-                <FormDescription>
+                <FormDescription className="text-gray-600 dark:text-gray-400">
                   Minimum 8 characters with uppercase, lowercase, and number
                 </FormDescription>
                 <FormMessage />
@@ -148,13 +150,14 @@ export default function RegisterForm() {
             name="confirmPassword"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Confirm Password</FormLabel>
+                <FormLabel className="text-gray-900 dark:text-white">Confirm Password</FormLabel>
                 <FormControl>
                   <Input
                     type="password"
                     placeholder="Confirm your password"
                     autoComplete="new-password"
                     disabled={isLoading}
+                    className="bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white placeholder:text-gray-500 dark:placeholder:text-gray-400"
                     {...field}
                   />
                 </FormControl>

@@ -39,12 +39,12 @@ export default function ProfilePage() {
     >
       {/* Page Header */}
       <div className="flex items-center gap-2 sm:gap-3 mb-6 sm:mb-8">
-        <div className="p-2 sm:p-3 bg-teal-100 rounded-full">
-          <User className="h-5 w-5 sm:h-6 sm:w-6 text-teal-600" />
+        <div className="p-2 sm:p-3 bg-teal-100 dark:bg-teal-900 rounded-full">
+          <User className="h-5 w-5 sm:h-6 sm:w-6 text-teal-600 dark:text-teal-400" />
         </div>
         <div className="min-w-0 flex-1">
-          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 break-words">Profile Settings</h1>
-          <p className="text-sm sm:text-base text-gray-600 mt-1">
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white break-words">Profile Settings</h1>
+          <p className="text-sm sm:text-base text-gray-600 dark:text-gray-300 mt-1">
             Manage your account information and preferences
           </p>
         </div>
@@ -71,7 +71,7 @@ export default function ProfilePage() {
 
       {/* Success State */}
       {!isLoading && !error && user && (
-        <div className="bg-white rounded-lg shadow-sm border p-4 sm:p-6">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4 sm:p-6">
           <ProfileForm user={user} />
         </div>
       )}

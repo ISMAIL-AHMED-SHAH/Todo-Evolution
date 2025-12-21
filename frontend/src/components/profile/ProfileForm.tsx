@@ -132,8 +132,8 @@ export function ProfileForm({ user }: ProfileFormProps) {
         animate="visible"
       >
         <div className="flex items-center gap-2 mb-4">
-          <Mail className="h-5 w-5 text-teal-600" />
-          <h2 className="text-xl font-semibold">Email Address</h2>
+          <Mail className="h-5 w-5 text-teal-600 dark:text-teal-400" />
+          <h2 className="text-xl font-semibold text-gray-900 dark:text-white">Email Address</h2>
         </div>
 
         <Form {...emailForm}>
@@ -143,17 +143,17 @@ export function ProfileForm({ user }: ProfileFormProps) {
               name="email"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Email</FormLabel>
+                  <FormLabel className="text-gray-700 dark:text-gray-200">Email</FormLabel>
                   <FormControl>
                     <Input
                       {...field}
                       type="email"
                       placeholder="your.email@example.com"
                       disabled={updateEmailMutation.isPending}
-                      className="w-full sm:max-w-md"
+                      className="w-full sm:max-w-md bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white placeholder:text-gray-500 dark:placeholder:text-gray-400"
                     />
                   </FormControl>
-                  <FormDescription>
+                  <FormDescription className="text-gray-600 dark:text-gray-400">
                     This is the email address associated with your account.
                   </FormDescription>
                   <FormMessage />
@@ -183,8 +183,8 @@ export function ProfileForm({ user }: ProfileFormProps) {
         animate="visible"
       >
         <div className="flex items-center gap-2 mb-4">
-          <Lock className="h-5 w-5 text-teal-600" />
-          <h2 className="text-xl font-semibold">Change Password</h2>
+          <Lock className="h-5 w-5 text-teal-600 dark:text-teal-400" />
+          <h2 className="text-xl font-semibold text-gray-900 dark:text-white">Change Password</h2>
         </div>
 
         <Form {...passwordForm}>
@@ -195,17 +195,17 @@ export function ProfileForm({ user }: ProfileFormProps) {
               name="currentPassword"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Current Password</FormLabel>
+                  <FormLabel className="text-gray-700 dark:text-gray-200">Current Password</FormLabel>
                   <FormControl>
                     <Input
                       {...field}
                       type="password"
                       placeholder="Enter current password"
                       disabled={changePasswordMutation.isPending}
-                      className="w-full sm:max-w-md"
+                      className="w-full sm:max-w-md bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white placeholder:text-gray-500 dark:placeholder:text-gray-400"
                     />
                   </FormControl>
-                  <FormDescription>
+                  <FormDescription className="text-gray-600 dark:text-gray-400">
                     Enter your current password to verify your identity.
                   </FormDescription>
                   <FormMessage />
@@ -219,17 +219,17 @@ export function ProfileForm({ user }: ProfileFormProps) {
               name="newPassword"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>New Password</FormLabel>
+                  <FormLabel className="text-gray-700 dark:text-gray-200">New Password</FormLabel>
                   <FormControl>
                     <Input
                       {...field}
                       type="password"
                       placeholder="Enter new password"
                       disabled={changePasswordMutation.isPending}
-                      className="w-full sm:max-w-md"
+                      className="w-full sm:max-w-md bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white placeholder:text-gray-500 dark:placeholder:text-gray-400"
                     />
                   </FormControl>
-                  <FormDescription>
+                  <FormDescription className="text-gray-600 dark:text-gray-400">
                     Must be at least 8 characters with uppercase, lowercase, and number.
                   </FormDescription>
                   <FormMessage />
@@ -243,17 +243,17 @@ export function ProfileForm({ user }: ProfileFormProps) {
               name="confirmNewPassword"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Confirm New Password</FormLabel>
+                  <FormLabel className="text-gray-700 dark:text-gray-200">Confirm New Password</FormLabel>
                   <FormControl>
                     <Input
                       {...field}
                       type="password"
                       placeholder="Confirm new password"
                       disabled={changePasswordMutation.isPending}
-                      className="w-full sm:max-w-md"
+                      className="w-full sm:max-w-md bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white placeholder:text-gray-500 dark:placeholder:text-gray-400"
                     />
                   </FormControl>
-                  <FormDescription>
+                  <FormDescription className="text-gray-600 dark:text-gray-400">
                     Re-enter your new password to confirm.
                   </FormDescription>
                   <FormMessage />
@@ -280,13 +280,13 @@ export function ProfileForm({ user }: ProfileFormProps) {
         initial="hidden"
         animate="visible"
       >
-        <Separator className="mb-6" />
-        <div className="text-sm text-gray-600 space-y-2">
+        <Separator className="mb-6 bg-gray-200 dark:bg-gray-700" />
+        <div className="text-sm text-gray-600 dark:text-gray-400 space-y-2">
           <p>
-            <span className="font-semibold">Account ID:</span> {user.id}
+            <span className="font-semibold text-gray-900 dark:text-gray-200">Account ID:</span> {user.id}
           </p>
           <p>
-            <span className="font-semibold">Member since:</span>{' '}
+            <span className="font-semibold text-gray-900 dark:text-gray-200">Member since:</span>{' '}
             {new Date(user.created_at).toLocaleDateString('en-US', {
               year: 'numeric',
               month: 'long',
@@ -294,7 +294,7 @@ export function ProfileForm({ user }: ProfileFormProps) {
             })}
           </p>
           <p>
-            <span className="font-semibold">Last updated:</span>{' '}
+            <span className="font-semibold text-gray-900 dark:text-gray-200">Last updated:</span>{' '}
             {new Date(user.updated_at).toLocaleDateString('en-US', {
               year: 'numeric',
               month: 'long',

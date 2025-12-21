@@ -26,11 +26,15 @@ export function Providers({ children }: ProvidersProps) {
             // Stale time: how long data is considered fresh
             staleTime: 5 * 60 * 1000, // 5 minutes
             // Cache time: how long unused data stays in cache
-            gcTime: 10 * 60 * 1000, // 10 minutes (formerly cacheTime)
+            gcTime: 30 * 60 * 1000, // 30 minutes - increased to prevent cache loss on navigation
             // Retry failed requests
             retry: 1,
-            // Refetch on window focus in production for fresh data
-            refetchOnWindowFocus: process.env.NODE_ENV === 'production',
+            // Don't refetch on window focus to prevent unnecessary requests
+            refetchOnWindowFocus: false,
+            // Don't refetch on mount if data is still fresh
+            refetchOnMount: false,
+            // Keep previous data while fetching new data
+            placeholderData: (previousData: any) => previousData,
           },
           mutations: {
             // Retry failed mutations once
