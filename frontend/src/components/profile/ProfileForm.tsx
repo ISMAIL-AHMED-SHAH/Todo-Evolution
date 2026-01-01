@@ -19,7 +19,7 @@
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { motion } from 'framer-motion';
-import { Mail, Lock, Save } from 'lucide-react';
+import { User as UserIcon, Lock, Save } from 'lucide-react';
 import {
   Form,
   FormControl,
@@ -64,10 +64,9 @@ const fieldVariants = {
 
 export function ProfileForm({ user }: ProfileFormProps) {
   // T130: Use profile mutations hook
-  const { updateEmailMutation, changePasswordMutation } = useProfileMutations(user.id, {
-    onUpdateEmailSuccess: (updatedUser) => {
-      // Reset form with new email
-      emailForm.reset({ email: updatedUser.email });
+  const { updateProfileMutation, changePasswordMutation } = useProfileMutations(user.id, {
+    onUpdateProfileSuccess: () => {
+      // Form will reflect updates when session is invalidated
     },
     onChangePasswordSuccess: () => {
       // Reset password form
@@ -79,11 +78,11 @@ export function ProfileForm({ user }: ProfileFormProps) {
     },
   });
 
-  // Email update form
-  const emailForm = useForm<UpdateProfileFormData>({
+  // Profile update form (name)
+  const profileForm = useForm<UpdateProfileFormData>({
     resolver: zodResolver(updateProfileSchema),
     defaultValues: {
-      email: user.email,
+      name: user.name || '',
     },
   });
 
@@ -98,18 +97,16 @@ export function ProfileForm({ user }: ProfileFormProps) {
   });
 
   /**
-   * T128: Handle email update submission
-   * T130: Uses updateEmailMutation from hook
-   * T131: Email validation via Zod schema
+   * T128: Handle profile update submission
+   * T130: Uses updateProfileMutation from hook
    * T133: Toast success message (handled by hook)
-   * T134: Error handling for duplicate email (handled by hook)
    */
-  const handleEmailUpdate = async (data: UpdateProfileFormData) => {
-    if (!data.email || data.email === user.email) {
+  const handleProfileUpdate = async (data: UpdateProfileFormData) => {
+    if (!data.name || data.name === user.name) {
       return; // No changes to submit
     }
 
-    updateEmailMutation.mutate(data);
+    updateProfileMutation.mutate(data);
   };
 
   /**
@@ -124,7 +121,7 @@ export function ProfileForm({ user }: ProfileFormProps) {
 
   return (
     <div className="space-y-8">
-      {/* Email Update Section - T128 */}
+      {/* Profile Update Section - T128 */}
       <motion.div
         custom={0}
         variants={fieldVariants}
@@ -132,29 +129,29 @@ export function ProfileForm({ user }: ProfileFormProps) {
         animate="visible"
       >
         <div className="flex items-center gap-2 mb-4">
-          <Mail className="h-5 w-5 text-teal-600 dark:text-teal-400" />
-          <h2 className="text-xl font-semibold text-gray-900 dark:text-white">Email Address</h2>
+          <UserIcon className="h-5 w-5 text-teal-600 dark:text-teal-400" />
+          <h2 className="text-xl font-semibold text-gray-900 dark:text-white">Profile Information</h2>
         </div>
 
-        <Form {...emailForm}>
-          <form onSubmit={emailForm.handleSubmit(handleEmailUpdate)} className="space-y-4">
+        <Form {...profileForm}>
+          <form onSubmit={profileForm.handleSubmit(handleProfileUpdate)} className="space-y-4">
             <FormField
-              control={emailForm.control}
-              name="email"
+              control={profileForm.control}
+              name="name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-gray-700 dark:text-gray-200">Email</FormLabel>
+                  <FormLabel className="text-gray-700 dark:text-gray-200">Name</FormLabel>
                   <FormControl>
                     <Input
                       {...field}
-                      type="email"
-                      placeholder="your.email@example.com"
-                      disabled={updateEmailMutation.isPending}
+                      type="text"
+                      placeholder="Your name"
+                      disabled={updateProfileMutation.isPending}
                       className="w-full sm:max-w-md bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white placeholder:text-gray-500 dark:placeholder:text-gray-400"
                     />
                   </FormControl>
                   <FormDescription className="text-gray-600 dark:text-gray-400">
-                    This is the email address associated with your account.
+                    This is the display name for your account.
                   </FormDescription>
                   <FormMessage />
                 </FormItem>
@@ -163,11 +160,11 @@ export function ProfileForm({ user }: ProfileFormProps) {
 
             <Button
               type="submit"
-              disabled={updateEmailMutation.isPending || !emailForm.formState.isDirty}
+              disabled={updateProfileMutation.isPending || !profileForm.formState.isDirty}
               className="bg-teal-600 hover:bg-teal-700 w-full sm:w-auto min-h-[44px]"
             >
               <Save className="h-4 w-4 mr-2" />
-              {updateEmailMutation.isPending ? 'Updating...' : 'Update Email'}
+              {updateProfileMutation.isPending ? 'Updating...' : 'Update Profile'}
             </Button>
           </form>
         </Form>
@@ -285,22 +282,26 @@ export function ProfileForm({ user }: ProfileFormProps) {
           <p>
             <span className="font-semibold text-gray-900 dark:text-gray-200">Account ID:</span> {user.id}
           </p>
-          <p>
-            <span className="font-semibold text-gray-900 dark:text-gray-200">Member since:</span>{' '}
-            {new Date(user.created_at).toLocaleDateString('en-US', {
-              year: 'numeric',
-              month: 'long',
-              day: 'numeric',
-            })}
-          </p>
-          <p>
-            <span className="font-semibold text-gray-900 dark:text-gray-200">Last updated:</span>{' '}
-            {new Date(user.updated_at).toLocaleDateString('en-US', {
-              year: 'numeric',
-              month: 'long',
-              day: 'numeric',
-            })}
-          </p>
+          {(user.created_at || user.createdAt) && (
+            <p>
+              <span className="font-semibold text-gray-900 dark:text-gray-200">Member since:</span>{' '}
+              {new Date(user.created_at || user.createdAt!).toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+              })}
+            </p>
+          )}
+          {(user.updated_at || user.updatedAt) && (
+            <p>
+              <span className="font-semibold text-gray-900 dark:text-gray-200">Last updated:</span>{' '}
+              {new Date(user.updated_at || user.updatedAt!).toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+              })}
+            </p>
+          )}
         </div>
       </motion.div>
     </div>
